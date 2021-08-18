@@ -5,14 +5,14 @@ import * as React from "react";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
-import { StackParamList } from "../types";
+import { MainStackParamList } from "../redux/types/navigation.type";
 import { Text, View } from "../components/Themed";
 import Constants from "expo-constants";
 import { Image } from "react-native";
 import ShopListScreen from "../screens/ShopList.screen";
 import ScannerScreen from "../screens/Scanner.screen";
 
-const Stack = createStackNavigator<StackParamList>();
+const Stack = createStackNavigator<MainStackParamList>();
 
 export default function Navigation() {
   const colorScheme = useColorScheme();

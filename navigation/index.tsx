@@ -8,8 +8,13 @@ import * as React from "react";
 import { ColorSchemeName } from "react-native";
 
 import NotFoundScreen from "../screens/NotFound.screen";
-import { RootStackParamList } from "../types";
+import { RootStackParamList } from "../redux/types/navigation.type";
 import Navigation from "./Navigation";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { Provider } from "react-redux";
+import store from "../redux/store";
+
+const queryClient = new QueryClient();
 
 export default function NavigationConfig({
   colorScheme,
@@ -17,11 +22,15 @@ export default function NavigationConfig({
   colorScheme: ColorSchemeName;
 }) {
   return (
-    <NavigationContainer
-      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-    >
-      <RootNavigator />
-    </NavigationContainer>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <NavigationContainer
+          theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <RootNavigator />
+        </NavigationContainer>
+      </QueryClientProvider>
+    </Provider>
   );
 }
 
