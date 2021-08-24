@@ -31,6 +31,7 @@ const screenOptions = ({ route }: any): any => {
   return {
     headerStyle: {
       backgroundColor: Colors.light.tint,
+      height: Constants.platform?.ios ? 110 : 85,
     },
     headerTintColor: "white",
     headerTitle: () => (

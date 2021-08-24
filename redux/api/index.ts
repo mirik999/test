@@ -12,7 +12,7 @@ async function injectToken() {
   // const user = JSON.parse(asyncData);
   axios.defaults.headers[
     "Authorization"
-  ] = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwYjc1ODQ5Zi1hMGFhLTQwMDMtODQyNy05NjNhNjgyNTUxNjYiLCJnaXZlbl9uYW1lIjoiU3VwZXIgQWRtaW4iLCJqdGkiOiI2N2VmYTBjYi02ODU0LTQwOWQtOWE0MS1mOWYxNTM2ODVmOTEiLCJpYXQiOiIxNjI5Mjc4MjUwIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbIlJlZ2lzdGVyZWRVc2VyIiwiU3VwZXJBZG1pbiIsIkFkbWluUGFuZWwiLCJCaWdBZG1pbiIsIkNMX1JFQUQiLCJTVE9SRV9SRUFEIiwiUlBfUkVBRCIsIkZTX1JFQUQiLCJDQVNIX1JFQUQiLCJFTVBfUkVBRCIsIk9SRF9SRUFEIiwiTEFfUkVBRCIsIlJFX1JFQUQiXSwibmJmIjoxNjI5Mjc4MjUwLCJleHAiOjE2MjkzMTQyNTAsImlzcyI6Imh0dHA6Ly93d3cudGVzdC5jb20vIiwiYXVkIjoiaHR0cDovL3d3dy50ZXN0LmNvbS8ifQ.h0clx4TLyse75IiAawhUdEXkA4cliv5hGGOMvCMPrMk`;
+  ] = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwYjc1ODQ5Zi1hMGFhLTQwMDMtODQyNy05NjNhNjgyNTUxNjYiLCJnaXZlbl9uYW1lIjoiU3VwZXIgQWRtaW4iLCJqdGkiOiJiMmM2OTA2Mi0zZTMwLTQ0MzMtYTYxYy02OTQ0Y2Q3YmZkYjQiLCJpYXQiOiIxNjI5NzAyNDgxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbIlJlZ2lzdGVyZWRVc2VyIiwiU3VwZXJBZG1pbiIsIkFkbWluUGFuZWwiLCJCaWdBZG1pbiIsIkNMX1JFQUQiLCJTVE9SRV9SRUFEIiwiUlBfUkVBRCIsIkZTX1JFQUQiLCJDQVNIX1JFQUQiLCJFTVBfUkVBRCIsIk9SRF9SRUFEIiwiTEFfUkVBRCIsIlJFX1JFQUQiXSwibmJmIjoxNjI5NzAyNDgxLCJleHAiOjE2Mjk3Mzg0ODEsImlzcyI6Imh0dHA6Ly93d3cudGVzdC5jb20vIiwiYXVkIjoiaHR0cDovL3d3dy50ZXN0LmNvbS8ifQ.7oydS86fcs2v1aa3Mx1s2IGB2BH7NkN8Ov9MTnmJLq8`;
 }
 
 axios.defaults.baseURL = "http://172.105.73.213/api";
@@ -36,6 +36,14 @@ const api = {
         .then<{ list: StoresResponseType[]; totalCount: number }>(
           (res) => res.data
         );
+    },
+  },
+  products: {
+    getProductByScanData: async (type: "qrcode" | "barcode", data: string) => {
+      await injectToken();
+      return axios
+        .get(`/Product/GetByQrCodeOrBarCode?Type=${type}&Value=${data}`)
+        .then((res) => res.data);
     },
   },
 };

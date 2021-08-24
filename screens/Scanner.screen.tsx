@@ -14,6 +14,7 @@ import Divider from "../components/Divider";
 import { RouteProp } from "@react-navigation/native";
 import { MainStackParamList } from "../redux/types/navigation.type";
 import { StackNavigationProp } from "@react-navigation/stack";
+import api from "../redux/api";
 
 type Props = {
   route: RouteProp<MainStackParamList, "Scanner">;
@@ -22,7 +23,9 @@ type Props = {
 
 export default function ScannerScreen({ navigation, route }: Props) {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [scanned, setScanned] = useState<boolean>(false);
+  const [scanned, setScanned] = useState(false);
+  const [count, setCount] = useState(1);
+  const [product, setProduct] = useState({});
 
   useEffect(() => {
     (async () => {
@@ -31,16 +34,34 @@ export default function ScannerScreen({ navigation, route }: Props) {
     })();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }: any) => {
+  const handleBarCodeScanned = async ({ type, data }: any) => {
     setScanned(true);
-    alert(`${type} - ${data}`);
+    const scanType = type.toLowerCase().includes("qr") ? "qrcode" : "barcode";
+    try {
+      const productResponse = await api.products.getProductByScanData(
+        scanType,
+        data
+      );
+      console.log({ productResponse });
+    } catch (err) {
+      console.log({ err });
+    }
   };
 
   if (hasPermission === null) {
     return <Text>Requesting for camera permission</Text>;
   }
-  if (hasPermission === false) {
+
+  if (!hasPermission) {
     return <Text>No access to camera</Text>;
+  }
+
+  function _onProcess() {
+    setScanned(false);
+  }
+
+  function _onFinish() {
+    setScanned(false);
   }
 
   return (
@@ -61,10 +82,7 @@ export default function ScannerScreen({ navigation, route }: Props) {
               paddingHorizontal: 10,
             }}
           >
-            <Button
-              title={"Tap to Scan Again"}
-              onPress={() => setScanned(false)}
-            />
+            <Button title="Yenidən skan et" onPress={() => setScanned(false)} />
           </View>
         )}
       </View>
@@ -74,22 +92,22 @@ export default function ScannerScreen({ navigation, route }: Props) {
           <Text>{route.params.storeName}</Text>
         </View>
         <View style={styles.inline}>
-          <Text style={{ width: 65, fontWeight: "bold" }}>Code:</Text>
+          <Text style={{ width: 65, fontWeight: "bold" }}>Kod:</Text>
           <Text>652743629837495</Text>
         </View>
         <View style={styles.inline}>
-          <Text style={{ width: 65, fontWeight: "bold" }}>Product:</Text>
+          <Text style={{ width: 65, fontWeight: "bold" }}>Məhsul:</Text>
           <Text>Some product from Material</Text>
         </View>
         <Divider />
         <View style={styles.inline}>
           <TextInput keyboardType="number-pad" value="1" style={styles.input} />
-          <Text>Count</Text>
+          <Text>Ədəd</Text>
         </View>
         <Divider />
-        <Button title="Add" onPress={() => setScanned(false)} />
+        <Button title="Əlavə et" onPress={_onProcess} />
         <Divider />
-        <Button title="Finish selling" onPress={() => setScanned(false)} />
+        <Button title="Satışı bitir" onPress={_onFinish} />
       </View>
     </Pressable>
   );
@@ -105,7 +123,7 @@ const styles = StyleSheet.create({
     height: 350,
     backgroundColor: Colors.light.container,
     borderBottomWidth: 1,
-    borderBottomColor: "gray",
+    borderBottomColor: "silver",
   },
   infoWrap: {
     padding: 20,
