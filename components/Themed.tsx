@@ -42,5 +42,5 @@ export function View(props: ViewProps) {
     "background"
   );
 
-  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+  return <DefaultView style={[style]} {...otherProps} />;
 }

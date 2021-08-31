@@ -10,7 +10,8 @@ import { Text, View } from "../components/Themed";
 import Constants from "expo-constants";
 import { Image } from "react-native";
 import ShopListScreen from "../screens/ShopList.screen";
-import ScannerScreen from "../screens/Scanner.screen";
+import ScannerScreen from "../screens/Scanner/Scanner.screen";
+import ProductListScreen from "../screens/ProductList.screen";
 
 const Stack = createStackNavigator<MainStackParamList>();
 
@@ -21,6 +22,7 @@ export default function Navigation() {
     <Stack.Navigator initialRouteName="ShopList" screenOptions={screenOptions}>
       <Stack.Screen name="ShopList" component={ShopListScreen} />
       <Stack.Screen name="Scanner" component={ScannerScreen} />
+      <Stack.Screen name="Products" component={ProductListScreen} />
     </Stack.Navigator>
   );
 }
@@ -34,13 +36,14 @@ const screenOptions = ({ route }: any): any => {
       height: Constants.platform?.ios ? 110 : 85,
     },
     headerTintColor: "white",
+    headerLeft: null,
     headerTitle: () => (
       <Image
         source={require("../assets/images/mstock-logo.png")}
         style={{ width: 160, height: 39 }}
       />
     ),
-    gestureEnabled: enableGesture,
+    gestureEnabled: false,
     gestureDirection: "horizontal",
     cardStyleInterpolator: ({ current, layouts }: any) => {
       return {

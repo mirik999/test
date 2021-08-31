@@ -55,6 +55,7 @@ export default function ShopListScreen({ navigation, route }: Props) {
               storeId: selectedStore,
               storeName: options.find((opt) => opt.value === selectedStore)!
                 .label,
+              invoiceProducts: [],
             })
           }
         />
