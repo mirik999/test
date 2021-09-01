@@ -9,10 +9,11 @@ import {
   TouchableWithoutFeedback,
   Vibration,
 } from "react-native";
-import { BarCodeScanner } from "expo-barcode-scanner";
+import { Camera } from "expo-camera";
 import { StatusBar } from "expo-status-bar";
-import { RouteProp } from "@react-navigation/native";
+import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+//rest
 import { MainStackParamList } from "../../redux/types/navigation.type";
 import Colors from "../../constants/Colors";
 import api from "../../redux/api";
@@ -24,7 +25,10 @@ import {
 import Divider from "../../components/Divider";
 import { Text, View } from "../../components/Themed";
 import Button from "../../components/Button";
-import { convertProductToInvoiceProduct } from "../../redux/functions/invoice.function";
+import {
+  checkTypeofScannedData,
+  convertProductToInvoiceProduct,
+} from "../../redux/functions/invoice.function";
 import {
   initialState,
   invoiceInitialState,
@@ -37,9 +41,10 @@ type Props = {
 };
 
 export default function ScannerScreen({ navigation, route }: Props) {
+  const [cameraVisibility, setCameraVisibility] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
-  const [count, setCount] = useState(1);
+  const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState<ProductType>(initialState);
   const [invoice, setInvoice] = useState<InvoiceType>(invoiceInitialState);
   const [invoiceProduct, setInvoiceProduct] = useState<InvoiceProductType>(
@@ -49,32 +54,33 @@ export default function ScannerScreen({ navigation, route }: Props) {
     []
   );
 
+  // remove barcode reader component from UI else
+  // camera will be working in any  other screen
+  useFocusEffect(() => {
+    setCameraVisibility(true);
+    return () => {
+      setCameraVisibility(false);
+    };
+  });
+
   // when decided to continue shopping update list from product-list screen
   // if there some product removed
   useEffect(() => {
-    if (
-      route.params.invoiceProducts.length > 0 &&
-      route.params.invoiceProducts.length !== invoiceProducts.length
-    ) {
-      setInvoiceProducts(route.params.invoiceProducts);
-    }
+    setInvoiceProducts(route.params.invoiceProducts);
   }, [route.params.invoiceProducts]);
 
+  // check camera permission
   // keep invoice data initial and add storeId from route params ( shop-list screen )
   useEffect(() => {
-    const invoiceData = {
-      ...invoiceInitialState,
-      storeIdFirst: route.params.storeId,
-    };
-    setInvoice(invoiceData);
-  }, []);
-
-  // check camera permission
-  useEffect(() => {
-    (async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
+    (async function() {
+      const { status } = await Camera.requestPermissionsAsync();
       setHasPermission(status === "granted");
-    })();
+      const invoiceData = {
+        ...invoiceInitialState,
+        storeIdFirst: route.params.storeId,
+      };
+      setInvoice(invoiceData);
+    })()
   }, []);
 
   // prepare invoice product from product and calculate some data
@@ -82,12 +88,12 @@ export default function ScannerScreen({ navigation, route }: Props) {
     const { storeName, storeId } = route.params;
     const invProductObject = convertProductToInvoiceProduct(
       product,
-      count,
+      quantity,
       storeId,
       storeName
     );
     setInvoiceProduct(invProductObject);
-  }, [product, count]);
+  }, [product, quantity]);
 
   // get product by scanned data (id from qrcode or barcode)
   // check if product exists in list already show warning
@@ -95,20 +101,22 @@ export default function ScannerScreen({ navigation, route }: Props) {
   // vibrate the phone ( extra )
   const handleBarCodeScanned = async ({ type, data }: any) => {
     setScanned(true);
-    const scanType = type.toLowerCase().includes("qr") ? "qrcode" : "barcode";
+    const scanType = checkTypeofScannedData(type);
     try {
       const productResponse = await api.products.getProductByScanData(
         scanType,
         data
       );
-      const isExists = invoiceProducts.some((ipd) => ipd.productId === productResponse.id);
-      console.log(invoiceProducts)
-      console.log(productResponse)
+      const isExists = invoiceProducts.some(
+        (ipd) => ipd.productId === productResponse.id
+      );
       if (isExists) {
-        Alert.alert("Bu məhsul artıq siyahıdadır")
+        Alert.alert("Bu məhsul artıq siyahıdadır");
       } else {
         setProduct(productResponse);
-        Vibration.vibrate([100]);
+        Platform.OS === "android"
+          ? Vibration.vibrate(100)
+          : Vibration.vibrate([100]);
       }
     } catch (err) {
       console.log({ err });
@@ -123,19 +131,18 @@ export default function ScannerScreen({ navigation, route }: Props) {
     return <Text>No access to camera</Text>;
   }
 
-  // enable camera to scan again
   // push invoiceProduct to array list
   // set invoiceProduct ot initialState
-  // set input count value to initial (1)
-  function _onProcess() {
-    setScanned(false);
+  // set input quantity value to initial (1)
+  // clean scanned product state
+  function _onAddToInvoiceList() {
     setInvoiceProducts((prev) => [invoiceProduct, ...prev]);
     setInvoiceProduct(invoiceProductInitialState);
-    setCount(1);
+    setQuantity(1);
+    setProduct(initialState);
   }
 
   function _onFinish() {
-    setScanned(false);
     navigation.navigate("Products", {
       storeId: route.params.storeId,
       storeName: route.params.storeName,
@@ -150,22 +157,27 @@ export default function ScannerScreen({ navigation, route }: Props) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <StatusBar style="light" backgroundColor="transparent" />
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View>
-          <View style={styles.barcodeWrap}>
-            <BarCodeScanner
-              onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-              style={StyleSheet.absoluteFillObject}
-            />
-            {scanned && (
-              <View style={styles.scanBtn}>
-                <Button
-                  text="Yenidən skan et"
-                  onPress={() => setScanned(false)}
-                />
-              </View>
-            )}
-          </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: Colors.light.container }}>
+          {cameraVisibility ? (
+            <View style={styles.barcodeWrap}>
+              <Camera
+                style={[StyleSheet.absoluteFill]}
+                type={"back"}
+                onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+              />
+              {scanned && (
+                <View style={styles.scanBtn}>
+                  <Button
+                    text="Yenidən skan et"
+                    onPress={() => setScanned(false)}
+                  />
+                </View>
+              )}
+            </View>
+          ) : (
+            <View style={styles.barcodeWrap} />
+          )}
           <View style={styles.infoWrap}>
             <View style={styles.inline}>
               <Text style={{ width: 65, fontWeight: "bold" }}>Anbar:</Text>
@@ -183,20 +195,24 @@ export default function ScannerScreen({ navigation, route }: Props) {
             <View style={styles.inline}>
               <TextInput
                 keyboardType="number-pad"
-                value={`${count}`}
+                value={`${quantity}`}
                 style={styles.input}
-                onChangeText={(val: string) => setCount(+val)}
+                onChangeText={(val: string) => setQuantity(+val)}
               />
               <Text>Ədəd</Text>
             </View>
             <Divider />
             <Button
               text="Əlavə et"
-              onPress={_onProcess}
-              // disabled={!Boolean(product.id)}
+              onPress={_onAddToInvoiceList}
+              disabled={!Boolean(product.productName)}
             />
             <Divider />
-            <Button text="Satışı bitir" onPress={_onFinish} />
+            <Button
+              text="Satışı bitir"
+              onPress={_onFinish}
+              disabled={!Boolean(invoiceProducts.length)}
+            />
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -210,14 +226,14 @@ const styles = StyleSheet.create({
   },
   barcodeWrap: {
     width: "100%",
-    height: 250,
+    height: 300,
     backgroundColor: Colors.light.container,
     borderBottomWidth: 1,
     borderBottomColor: "silver",
   },
   infoWrap: {
     padding: 20,
-    backgroundColor: "transparent",
+    backgroundColor: Colors.light.container,
   },
   input: {
     width: 50,
@@ -237,7 +253,7 @@ const styles = StyleSheet.create({
   },
   scanBtn: {
     bottom: 10,
-    right: 10,
+    right: 0,
     position: "absolute",
     borderRadius: 5,
     paddingHorizontal: 10,

@@ -43,7 +43,7 @@ const screenOptions = ({ route }: any): any => {
         style={{ width: 160, height: 39 }}
       />
     ),
-    gestureEnabled: false,
+    gestureEnabled: true,
     gestureDirection: "horizontal",
     cardStyleInterpolator: ({ current, layouts }: any) => {
       return {

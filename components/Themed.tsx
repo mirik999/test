@@ -31,7 +31,7 @@ export function Text(props: TextProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
 
   return (
-    <DefaultText style={[{ color, fontSize: 12 }, style]} {...otherProps} />
+    <DefaultText style={[{ color, fontSize: 12 }, style]} {...otherProps} allowFontScaling={false} />
   );
 }
 

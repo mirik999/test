@@ -1,8 +1,8 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\yarn\bin\yarn.js add react-native-screens@~3.4.0
+  C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\yarn\bin\yarn.js add expo-camera@~11.2.2
 
 PATH: 
-  C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\miral\bin;D:\Projects\@MIT\fastselling-mobile-app\node_modules\.bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files\dotnet;C:\Program Files\Git\cmd;C:\Users\miral\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Program Files\Microsoft SQL Server\130\Tools\Binn;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn;C:\Program Files\PuTTY;C:\ProgramData\chocolatey\bin;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files (x86)\Microsoft SQL Server\150\DTS\Binn;C:\Program Files\Azure Data Studio\bin;C:\Program Files (x86)\jdk-16.0.2\bin;C:\Program Files\OpenJDK\openjdk-8u302-b08\bin;C:\gradle-6.5.1\bin;C:\Users\miral\AppData\Local\Microsoft\WindowsApps;C:\Users\miral\.dotnet\tools;C:\Program Files\JetBrains\WebStorm 2021.1.1\bin;C:\Users\miral\AppData\Local\GitHubDesktop\bin;C:\Users\miral\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\miral\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\Azure Data Studio\bin;C:\Users\miral\AppData\Local\Android\Sdk\platform-tools
+  C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\miral\bin;D:\Projects\@MIT\fastselling-mobile-app\node_modules\.bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files\dotnet;C:\Program Files\Git\cmd;C:\Users\miral\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Program Files\Microsoft SQL Server\130\Tools\Binn;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn;C:\Program Files\PuTTY;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Microsoft SQL Server\150\DTS\Binn;C:\Program Files\Azure Data Studio\bin;C:\Program Files (x86)\jdk-16.0.2\bin;C:\Program Files\OpenJDK\openjdk-8u302-b08\bin;C:\gradle-6.5.1\bin;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Users\miral\AppData\Local\Microsoft\WindowsApps;C:\Users\miral\.dotnet\tools;C:\Program Files\JetBrains\WebStorm 2021.1.1\bin;C:\Users\miral\AppData\Local\GitHubDesktop\bin;C:\Users\miral\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\miral\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\Azure Data Studio\bin;C:\Users\miral\AppData\Local\Android\Sdk\platform-tools
 
 Yarn version: 
   1.22.10
@@ -60,11 +60,12 @@ npm manifest:
       "react-native-pager-view": "^5.4.0",
       "react-native-picker-select": "^8.0.4",
       "react-native-reanimated": "~2.2.0",
-      "react-native-screens": "~3.4.0",
+      "react-native-screens": "2.15.2",
       "react-native-web": "~0.13.12",
       "react-query": "^3.19.6",
       "react-redux": "^7.2.4",
-      "redux-thunk": "^2.3.0"
+      "redux-thunk": "^2.3.0",
+      "uuid-random": "^1.3.2"
     },
     "devDependencies": {
       "@babel/core": "^7.9.0",
@@ -7281,12 +7282,10 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-3.2.0.tgz#06113c6b208f982d68ab5c3cebd199ca93db6941"
     integrity sha512-k2Nty4PwSnrg9HwrYeeE+EYqViYJoOFwEy9LxL5RIRfoqxAq/uQXNGwpUg2/u4gnKpBbEPa9eRh15KKMe/VHkA==
   
-  react-native-screens@~3.4.0:
-    version "3.4.0"
-    resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-3.4.0.tgz#91deeac7630db9f3984053e2ab146d71bba7af4e"
-    integrity sha512-cg+q9MRnVdeOcJyvJtqffoXLur/C2wHA/7IO2+FAipzTlgHbbM1mTuSM7qG+SeiQjoIs4mHOEf7A0ziPKW04sA==
-    dependencies:
-      warn-once "^0.1.0"
+  react-native-screens@2.15.2:
+    version "2.15.2"
+    resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.15.2.tgz#a449700e895b462937211ec72ed6f09652758f06"
+    integrity sha512-CagNf2APXkVoRlF3Mugr264FbKbrBg9eXUkqhIPVeZB8EsdS8XPrnt99yj/pzmT+yJMBY0dGrjXT8+68WYh6YQ==
   
   react-native-web@~0.13.12:
     version "0.13.18"
@@ -8650,6 +8649,11 @@ Lockfile:
     version "1.0.1"
     resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
     integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
+  
+  uuid-random@^1.3.2:
+    version "1.3.2"
+    resolved "https://registry.yarnpkg.com/uuid-random/-/uuid-random-1.3.2.tgz#96715edbaef4e84b1dcf5024b00d16f30220e2d0"
+    integrity sha512-UOzej0Le/UgkbWEO8flm+0y+G+ljUon1QWTEZOq1rnMAsxo2+SckbiZdKzAHHlVh6gJqI1TjC/xwgR50MuCrBQ==
   
   uuid@^3.3.2, uuid@^3.4.0:
     version "3.4.0"
