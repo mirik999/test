@@ -7,10 +7,11 @@
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "light",
+    "backgroundColor": "#eaeaea",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#084a62"
+      "backgroundColor": "#eaeaea"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

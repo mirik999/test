@@ -1,28 +1,27 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 //types
-import { AuthResponseProps } from '../types/auth.type';
+import { AuthResponse } from '../types/auth.type';
 //utils
 import {
   removeFromAsyncStorage,
   saveInAsyncStorage,
 } from '../utils/async-storage.utility';
 
-const initialState: AuthResponseProps = {
+const initialState: AuthResponse = {
   expiration: 0,
   refresh_token: '',
   token: '',
-  phoneNumber: '',
-  email: '',
+  username: '',
 };
 
 const user = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    load(state: AuthResponseProps, action: PayloadAction<AuthResponseProps>) {
+    load(state: AuthResponse, action: PayloadAction<AuthResponse>) {
       return action.payload;
     },
-    save(state: AuthResponseProps, action: PayloadAction<AuthResponseProps>) {
+    save(state: AuthResponse, action: PayloadAction<AuthResponse>) {
       const strPayload = JSON.stringify(action.payload);
       saveInAsyncStorage('user', strPayload);
       return action.payload;

@@ -1,9 +1,9 @@
-import { ScannerRouteType } from "./scanner.type";
-import { InvoiceProductType, InvoiceType, ProductType } from "./product.type";
+import { ScannerRouteType } from './scanner.type';
+import { InvoiceProductType, InvoiceType, ProductType } from './product.type';
 
 export type RootStackParamList = {
-  Root: undefined;
-  Auth: undefined;
+  MainRoot: undefined;
+  AuthRoot: undefined;
   NotFound: undefined;
 };
 
@@ -16,6 +16,7 @@ export type AuthStackParamList = {
 };
 
 export type MainStackParamList = {
+  Auth: undefined;
   ShopList: undefined;
   Scanner: ScannerRouteType;
   Products: {
