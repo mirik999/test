@@ -69,21 +69,32 @@ export default function ProductListScreen({ navigation, route }: Props) {
   }
 
   async function _onSend() {
-    try {
-      invoice.listProduct = invoiceProducts;
-      invoice.totalAmount = invoiceProducts.reduce(
-        (acc, arr) => acc + arr.discountAmount,
-        0
-      );
-      invoice.benefit = invoiceProducts.reduce(
-        (acc, arr) => acc + arr.benefit,
-        0
-      );
-      await mutation.mutateAsync(invoice);
-      setSuccess(true);
-    } catch (err) {
-      console.log({ err });
-    }
+    Alert.alert("Satış tamamlansın ?", "", [
+      {
+        text: "Bəli",
+        onPress: async () => {
+          try {
+            invoice.listProduct = invoiceProducts;
+            invoice.totalAmount = invoiceProducts.reduce(
+              (acc, arr) => acc + arr.discountAmount,
+              0
+            );
+            invoice.benefit = invoiceProducts.reduce(
+              (acc, arr) => acc + arr.benefit,
+              0
+            );
+            await mutation.mutateAsync(invoice);
+            setSuccess(true);
+          } catch (err) {
+            console.log({ err });
+          }
+        },
+      },
+      {
+        text: "Xeyr",
+        onPress: () => false,
+      },
+    ]);
   }
 
   return (
@@ -96,7 +107,8 @@ export default function ProductListScreen({ navigation, route }: Props) {
               <Text>{product.productName}</Text>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text style={{ marginHorizontal: 8 }}>
-                  {product.cost * product.quantity} AZN
+                  {product.sellingAmount * product.quantity} AZN
+                  [{product.sellingAmount}]
                 </Text>
                 <TextInput
                   keyboardType="number-pad"
@@ -112,6 +124,15 @@ export default function ProductListScreen({ navigation, route }: Props) {
             </View>
           );
         })}
+      </View>
+      <View style={styles.totalWrap}>
+        <Text style={{ fontSize: 16 }}>
+          Cəmi:&nbsp;
+          {
+            invoiceProducts.reduce((acc, arr) => acc + (arr.sellingAmount * arr.quantity), 0)
+          }
+          &nbsp;AZN
+        </Text>
       </View>
       <View style={styles.footerWrap}>
         <Button
@@ -175,4 +196,9 @@ const styles = StyleSheet.create({
   footerWrap: {
     padding: 20,
   },
+  totalWrap: {
+    marginHorizontal: 20,
+    marginBottom: 10,
+    alignItems: 'flex-end'
+  }
 });
